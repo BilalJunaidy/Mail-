@@ -46,7 +46,7 @@ def compose(request):
         except User.DoesNotExist:
             return JsonResponse({
                 "error": f"User with email {email} does not exist."
-            }, status=400)
+            }, status=400)  
 
     # Get contents of email
     subject = data.get("subject", "")
