@@ -6,11 +6,10 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
   //document.querySelector('#compose-form').addEventListener("Submit", alert('event is trigerred'));
-  document.querySelector('#compose-form').onsubmit = function() {
-    post_email;
-    load_mailbox('inbox');
-  };
+  document.querySelector('#compose-form').onsubmit = post_email;
+  //document.querySelector('#compose-form').onsubmit = load_mailbox('inbox');
 
+ 
   // By default, load the inbox
   load_mailbox('inbox');
 });
@@ -37,24 +36,61 @@ function post_email() {
   let email_subject = document.querySelector('#compose-body').value;
 
   // Printing out these constants in our console log to ensure that we are getting the correct output as expected
-  console.log(`To: ${recipient_list}, Body: ${email_body}, Subject: ${email_subject}`);
+  //console.log(`To: ${recipient_list}, Body: ${email_body}, Subject: ${email_subject}`);
 
   fetch('emails', {
     method: 'POST',
     body: JSON.stringify({
-      recipients: `${recipient_list}`, 
-      subject: `${email_body}`,
-      body: `${email_subject}` 
+        recipients: `${recipient_list}`,
+        subject: `${email_body}`,
+        body: `${email_subject}` 
     })
   })
-  .then(response => response.json())
-  .then(result => {
-      console.log(result);
+  // New method 
+  .then(function(response) {
+      console.log(response.headers);
+      console.log(response.status);
+      console.log(`The header is ${response.headers}`);
+      console.log(`The body is ${response.body}`);
+      console.log(`The status is ${response.status}`);
+      return response.json();
+  })
+  .then(function(data) {
+      console.log(`Data is ok ${data.ok}`);
+      console.log(`Data is message ${data.message}`);
+      console.log(`Data is status ${data.status}`);
+      console.log(`Data is error ${data.error}`);
   });
-
-  // This prevents the form from actually being submitted 
   return false;
 }
+
+
+  // Old method
+  // .then(function(response) {
+    
+  //   // To print the status code of the response object BEFORE converting it into a JSON object
+  //   let response_status = response.status;
+  //   console.log(`The status is :${response_status}`);
+
+  //   // Check whether the response returned is of 200 status code or not. 
+  //   if (response.ok) {
+  //     // To return the response object converted into a JSON object
+  //     return response.json();
+  //   }
+  //   else {
+  //     alert('error');
+  //     return response.json();
+  //   }
+  // })
+  // .then(result => {
+  //     // Print result
+  //     console.log(result);
+      
+  // });
+
+  // // This prevents the form from actually being submitted 
+  // return false;
+//}
 
 function load_mailbox(mailbox) {
   
